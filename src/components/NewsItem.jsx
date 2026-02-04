@@ -1,8 +1,8 @@
 import newsimage from "../assets/news.jpg";
-const NewsItem = ({ title, description, url, image }) => {
+const NewsItem = ({ title, description, src,url}) => {
   return (
     <div className="card bg-dark text-light h-100">   
-     <img src={image || newsimage} className="card-img-top" alt="news" style={{ height: "200px", objectFit: "cover" }}
+     <img src={src || newsimage} className="card-img-top" alt="news" style={{ height: "200px", objectFit: "cover" }}
         onError={(e) => {
           e.target.onerror = null; 
           e.target.src = newsimage;

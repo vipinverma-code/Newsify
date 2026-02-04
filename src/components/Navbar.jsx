@@ -63,11 +63,7 @@ const Navbar = ({setCategory}) => {
                 Entertainment
               </div>
             </li>
-            <li className="nav-item">
-              <div className="nav-link" onClick={() => setCategory("world")}>
-                World
-              </div>
-            </li>
+            
             <li className="nav-item">
               <div className="nav-link" onClick={() => setCategory("nation")}>
                 Nation
