@@ -18,7 +18,7 @@ const Navbar = ({setCategory}) => {
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarNavAltMarkup"
+          data-bs-target="#navbarNav"
           aria-controls="navbarNavAltMarkup"
           aria-expanded="false"
           aria-label="Toggle navigation"
@@ -63,12 +63,8 @@ const Navbar = ({setCategory}) => {
                 Entertainment
               </div>
             </li>
-            
-            <li className="nav-item">
-              <div className="nav-link" onClick={() => setCategory("nation")}>
-                Nation
-              </div>
-            </li>
+
+         
           </ul>
         </div>
       </div>
