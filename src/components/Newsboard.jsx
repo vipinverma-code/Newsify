@@ -5,8 +5,8 @@ import NewsItem from "./NewsItem";
 const Newsboard = ({category}) => {
     const [articles,setArticles] = useState([]);
     useEffect(()=>{
-        let url = `https://newsapi.org/v2/top-headlines?category=${category}&country=us&lang=en&apikey=${import.meta.env.VITE_API_KEY}`;   
-        fetch(url).then(response=> response.json()).then(data=> setArticles(data.articles));
+        let url = `https://newsapi.org/v2/top-headlines?category=${category}&country=us&apiKey=${import.meta.env.VITE_API_KEY}`;   
+        fetch(url).then(response=> response.json()).then(data=> setArticles(data.articles || []));
     },[category]);
   return (
     <div className="container mt-4">
