@@ -1,11 +1,36 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import NewsItem from "./NewsItem";
-const Newsboard = ({category}) => {
-    const [articles,setArticles] = useState([]);
-    useEffect(()=>{
-        let url = `https://newsapi.org/v2/top-headlines?category=${category}&apiKey=${import.meta.env.VITE_API_KEY}`;   
-        fetch(url).then(response=> response.json()).then(data=> setArticles(data.articles || []));
-    },[category]);
+const Newsboard = ({ category }) => {
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(
+          `/.netlify/functions/news?category=${encodeURIComponent(category)}`,
+          { signal: controller.signal },
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch news");
+        }
+
+        const data = await response.json();
+        setArticles(data.articles || []);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("News fetching error:", error);
+        }
+      }
+    };
+
+    fetchNews();
+
+    return () => controller.abort();
+  }, [category]);
+
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">
@@ -26,6 +51,6 @@ const Newsboard = ({category}) => {
       </div>
     </div>
   );
-}
+};
 
 export default Newsboard;
