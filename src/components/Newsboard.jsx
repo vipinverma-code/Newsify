@@ -1,34 +1,29 @@
 import { useEffect, useState } from "react";
 import NewsItem from "./NewsItem";
+
 const Newsboard = ({ category }) => {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     const fetchNews = async () => {
       try {
         const response = await fetch(
-          `/.netlify/functions/news?category=${encodeURIComponent(category)}`,
-          { signal: controller.signal },
+          `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${import.meta.env.VITE_NEWS_API_KEY}`,
         );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch news");
-        }
-
         const data = await response.json();
-        setArticles(data.articles || []);
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          console.error("News fetching error:", error);
+
+        if (data.status === "ok") {
+          setArticles(data.articles);
+        } else {
+          console.error("NewsAPI Error:", data.message);
         }
+      } catch (error) {
+        console.error("News fetching error:", error);
       }
     };
 
     fetchNews();
-
-    return () => controller.abort();
   }, [category]);
 
   return (
