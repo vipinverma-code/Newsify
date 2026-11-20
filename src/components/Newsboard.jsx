@@ -1,29 +1,32 @@
 import { useEffect, useState } from "react";
 import NewsItem from "./NewsItem";
+import { fetchNews } from "../services/newsApi";
 
 const Newsboard = ({ category }) => {
   const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchNews = async () => {
+    const getNews = async () => {
       try {
-        const response = await fetch(
-          `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${import.meta.env.VITE_NEWS_API_KEY}`,
-        );
+        setLoading(true);
+        setError("");
 
-        const data = await response.json();
+        const data = await fetchNews(category);
 
-        if (data.status === "ok") {
-          setArticles(data.articles);
-        } else {
-          console.error("NewsAPI Error:", data.message);
-        }
+        setArticles(data);
       } catch (error) {
         console.error("News fetching error:", error);
+
+        setArticles([]);
+        setError(error.message || "Something went wrong");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchNews();
+    getNews();
   }, [category]);
 
   return (
@@ -32,14 +35,22 @@ const Newsboard = ({ category }) => {
         Latest <span className="badge bg-danger">News</span>
       </h2>
 
+      {loading && <h5 className="text-center">Loading news...</h5>}
+
+      {error && <div className="alert alert-danger text-center">{error}</div>}
+
+      {!loading && !error && articles.length === 0 && (
+        <h5 className="text-center">No news articles found.</h5>
+      )}
+
       <div className="row">
-        {articles.map((news, index) => (
-          <div className="col-md-3 col-sm-6 mb-4" key={index}>
+        {articles.map((news) => (
+          <div className="col-md-3 col-sm-6 mb-4" key={news.id}>
             <NewsItem
-              title={news.title}
-              description={news.description}
-              url={news.url}
-              src={news.urlToImage}
+              title={news.webTitle}
+              description={news.fields?.trailText}
+              url={news.webUrl}
+              src={news.fields?.thumbnail}
             />
           </div>
         ))}
